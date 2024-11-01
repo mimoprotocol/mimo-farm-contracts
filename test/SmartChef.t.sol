@@ -94,9 +94,9 @@ contract SmartChefTest is Test {
         assertEq(chef.pendingReward(alice), 0.1 ether + 0.025 ether * 9);
         assertEq(chef.pendingReward(bob), 0.025 ether * 3 * 9);
         vm.prank(alice);
-        chef.deposit(0);
+        chef.withdraw(0.5 ether);
         vm.prank(bob);
-        chef.deposit(0);
+        chef.withdraw(1 ether);
         assertEq(rewardToken.balanceOf(alice), 0.1 ether + 0.025 ether * 9);
         assertEq(rewardToken.balanceOf(bob), 0.025 ether * 3 * 9);
     }
