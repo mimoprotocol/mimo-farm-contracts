@@ -50,7 +50,9 @@ contract SmartChef is Ownable, ReentrancyGuard {
     event AdminTokenRecovery(address tokenRecovered, uint256 amount);
     event Deposit(address indexed user, uint256 amount);
     event EmergencyWithdraw(address indexed user, uint256 amount);
-    event NewRewardPerBlock(uint256 rewardPerBlock);
+    event NewRewardPerSecond(uint256 rewardPerSecond);
+    event NewStartTimestamp(uint256 startTimestamp);
+    event NewEndTimestamp(uint256 endTimestamp);
     event NewPoolLimit(uint256 poolLimitPerUser);
     event RewardsStop(uint256 timestamp);
     event Withdraw(address indexed user, uint256 amount);
@@ -72,9 +74,7 @@ contract SmartChef is Ownable, ReentrancyGuard {
         uint256 _endTimestamp,
         uint256 _poolLimitPerUser
     ) {
-        require(_stakedToken.totalSupply() >= 0);
-        require(_rewardToken.totalSupply() >= 0);
-        require(_stakedToken != _rewardToken, "Tokens must be be different");
+        require(_startTimestamp > block.timestamp && _endTimestamp > _startTimestamp, "invalid timestamp");
 
         stakedToken = _stakedToken;
         rewardToken = _rewardToken;
@@ -226,9 +226,31 @@ contract SmartChef is Ownable, ReentrancyGuard {
      * @param _rewardPerSecond: the reward per second
      */
     function updateRewardPerSecond(uint256 _rewardPerSecond) external onlyOwner {
-        require(block.timestamp < startTimestamp, "Pool has started");
+        _updatePool();
         rewardPerSecond = _rewardPerSecond;
-        emit NewRewardPerBlock(_rewardPerSecond);
+        emit NewRewardPerSecond(_rewardPerSecond);
+    }
+
+    /*
+     * @notice Update start timestamp
+     * @dev Only callable by owner.
+     * @param _startTimestamp: the start timestamp
+     */
+    function updateStartTimestamp(uint256 _startTimestamp) external onlyOwner {
+        require(startTimestamp > block.timestamp, "Mining has started");
+        require(_startTimestamp > block.timestamp && _startTimestamp < endTimestamp, "Invalid timestamp");
+
+        startTimestamp = _startTimestamp;
+        lastRewardTimestamp = _startTimestamp;
+        emit NewStartTimestamp(_startTimestamp);
+    }
+
+    function updateEndTimestamp(uint256 _endTimestamp) external onlyOwner {
+        require(_endTimestamp > block.timestamp, "Invalid timestamp");
+
+        _updatePool();
+        endTimestamp = _endTimestamp;
+        emit NewEndTimestamp(_endTimestamp);
     }
 
     /*
