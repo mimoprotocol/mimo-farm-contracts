@@ -31,13 +31,13 @@ contract SmartChef is Ownable, ReentrancyGuard {
     uint256 public rewardPerSecond;
 
     // The precision factor
-    uint256 public PRECISION_FACTOR;
+    uint256 public immutable PRECISION_FACTOR;
 
     // The reward token
-    IERC20Metadata public rewardToken;
+    IERC20Metadata public immutable rewardToken;
 
     // The staked token
-    IERC20Metadata public stakedToken;
+    IERC20Metadata public immutable stakedToken;
 
     // Info of each user that stakes tokens (stakedToken)
     mapping(address => UserInfo) public userInfo;
