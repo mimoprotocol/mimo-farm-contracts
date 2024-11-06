@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.19;
+pragma solidity ^0.8.0;
 
 import "./pool/IUniswapV3PoolImmutables.sol";
 import "./pool/IUniswapV3PoolState.sol";
