@@ -15,6 +15,8 @@ import "../uniswap/periphery/interfaces/IMulticall.sol";
 interface IUniswapV3Staker is IERC721Receiver, IMulticall {
     /// @param rewardToken The token being distributed as a reward
     /// @param pool The Uniswap V3 pool
+    /// @param tickLower The lower tick
+    /// @param tickUpper The upper tick
     /// @param startTime The time when the incentive program begins
     /// @param endTime The time when rewards stop accruing
     /// @param refundee The address which receives any remaining reward tokens when the incentive is ended
@@ -127,6 +129,8 @@ interface IUniswapV3Staker is IERC721Receiver, IMulticall {
     /// @notice Event emitted when a liquidity mining incentive has been created
     /// @param rewardToken The token being distributed as a reward
     /// @param pool The Uniswap V3 pool
+    /// @param tickLower The lower tick
+    /// @param tickUpper The upper tick
     /// @param startTime The time when the incentive program begins
     /// @param endTime The time when rewards stop accruing
     /// @param refundee The address which receives any remaining reward tokens after the end time
@@ -134,6 +138,8 @@ interface IUniswapV3Staker is IERC721Receiver, IMulticall {
     event IncentiveCreated(
         IERC20Minimal indexed rewardToken,
         IUniswapV3Pool indexed pool,
+        int24 tickLower,
+        int24 tickUpper,
         uint256 startTime,
         uint256 endTime,
         address refundee,

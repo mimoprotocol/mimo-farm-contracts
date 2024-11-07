@@ -110,6 +110,14 @@ contract UniswapV3Staker is IUniswapV3Staker, Multicall {
             key.endTime - key.startTime <= maxIncentiveDuration,
             "UniswapV3Staker::createIncentive: incentive duration is too long"
         );
+        if (key.tickLower == MIN_TICK) {
+            require(key.tickUpper == 0, "invalid ticker");
+        } else {
+            require(
+                key.tickLower < key.tickUpper && key.tickLower > MIN_TICK && key.tickUpper < (0 - MIN_TICK),
+                "invalid ticker"
+            );
+        }
 
         bytes32 incentiveId = IncentiveId.compute(key);
 
@@ -117,7 +125,9 @@ contract UniswapV3Staker is IUniswapV3Staker, Multicall {
 
         TransferHelperExtended.safeTransferFrom(address(key.rewardToken), msg.sender, address(this), reward);
 
-        emit IncentiveCreated(key.rewardToken, key.pool, key.startTime, key.endTime, key.refundee, reward);
+        emit IncentiveCreated(
+            key.rewardToken, key.pool, key.tickLower, key.tickUpper, key.startTime, key.endTime, key.refundee, reward
+        );
     }
 
     /// @inheritdoc IUniswapV3Staker
