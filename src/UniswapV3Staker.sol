@@ -16,6 +16,8 @@ import "./uniswap/periphery/base/Multicall.sol";
 
 /// @title Uniswap V3 canonical staking interface
 contract UniswapV3Staker is IUniswapV3Staker, Multicall {
+    int24 constant MIN_TICK = -887273;
+
     /// @notice Represents a staking incentive
     struct Incentive {
         uint256 totalRewardUnclaimed;
@@ -313,6 +315,9 @@ contract UniswapV3Staker is IUniswapV3Staker, Multicall {
 
         require(pool == key.pool, "UniswapV3Staker::stakeToken: token pool is not the incentive pool");
         require(liquidity > 0, "UniswapV3Staker::stakeToken: cannot stake token with 0 liquidity");
+        if (key.tickLower != MIN_TICK) {
+            require(tickLower >= key.tickLower && tickUpper <= key.tickUpper, "invalid range");
+        }
 
         deposits[tokenId].numberOfStakes++;
         incentives[incentiveId].numberOfStakes++;

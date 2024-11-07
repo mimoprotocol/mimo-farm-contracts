@@ -21,6 +21,8 @@ interface IUniswapV3Staker is IERC721Receiver, IMulticall {
     struct IncentiveKey {
         IERC20Minimal rewardToken;
         IUniswapV3Pool pool;
+        int24 tickLower;
+        int24 tickUpper;
         uint256 startTime;
         uint256 endTime;
         address refundee;
