@@ -7,3 +7,4 @@ solc_version = '0.8.19'
 optimizer_runs = 10_000
 via_ir = true
 ffi = true
+evm_version = "london"
