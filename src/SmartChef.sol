@@ -197,6 +197,7 @@ contract SmartChef is Ownable, ReentrancyGuard {
      * @dev Only callable by owner
      */
     function stopReward() external onlyOwner {
+        require(endTimestamp < block.timestamp, "Cannot stop ended cycle");
         endTimestamp = block.timestamp;
 
         emit RewardsStop(block.timestamp);
