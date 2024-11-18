@@ -12,5 +12,5 @@ Created Pool: 0x7610340c3ecb74c416797eb41021c6c24ae27e39
 ### Mainnet
 
 ```
-Deployed SmartchefFactory:  0x0DB7c193736fa26a13300987a66CACb13A44dff6
+Deployed SmartchefFactory:  0x082836ae4db533fd0dfc8fc0edcd78a1d41b27c6
 ```
