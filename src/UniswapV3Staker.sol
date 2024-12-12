@@ -53,6 +53,8 @@ contract UniswapV3Staker is IUniswapV3Staker, Multicall {
     /// @dev bytes32 refers to the return value of IncentiveId.compute
     mapping(bytes32 => Incentive) public override incentives;
 
+    mapping(bytes32 => bool) public canceled;
+
     /// @dev deposits[tokenId] => Deposit
     mapping(uint256 => Deposit) public override deposits;
 
@@ -152,6 +154,16 @@ contract UniswapV3Staker is IUniswapV3Staker, Multicall {
         // note we never clear totalSecondsClaimedX128
 
         emit IncentiveEnded(incentiveId, refund);
+    }
+
+    function cancel(IncentiveKey memory key) external {
+        require(block.timestamp < key.startTime, "UniswapV3Staker::cancel: cannot cancel incentive before start time");
+        require(msg.sender == key.refundee, "UniswapV3Staker::cancel: only refundee");
+
+        bytes32 incentiveId = IncentiveId.compute(key);
+        canceled[incentiveId] = true;
+
+        emit IncentiveCanceled(incentiveId);
     }
 
     /// @notice Upon receiving a Uniswap V3 ERC721, creates the token deposit setting owner to `from`. Also stakes token
@@ -314,6 +326,7 @@ contract UniswapV3Staker is IUniswapV3Staker, Multicall {
         require(block.timestamp < key.endTime, "UniswapV3Staker::stakeToken: incentive ended");
 
         bytes32 incentiveId = IncentiveId.compute(key);
+        require(!canceled[incentiveId], "UniswapV3Staker::stakeToken: incentive canceled");
 
         require(incentives[incentiveId].totalRewardUnclaimed > 0, "UniswapV3Staker::stakeToken: non-existent incentive");
         require(

@@ -172,4 +172,6 @@ interface IUniswapV3Staker is IERC721Receiver, IMulticall {
     /// @param to The address where claimed rewards were sent to
     /// @param reward The amount of reward tokens claimed
     event RewardClaimed(address indexed to, uint256 reward);
+
+    event IncentiveCanceled(bytes32 indexed incentiveId);
 }
